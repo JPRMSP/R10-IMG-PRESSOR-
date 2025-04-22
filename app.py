@@ -11,35 +11,35 @@ if check_password():
     st.title("🔒 Image Compressor with Login")
 
     st.markdown("""
-    This app lets you compress JPEG/PNG images and save them to the `/content/` directory.
+    This app compresses JPEG/PNG images.
     - Upload an image
-    - Choose the compression quality
-    - Download or use the file saved in Google Colab
+    - Choose compression quality
+    - Download the compressed image
     """)
 
     uploaded_file = st.file_uploader("📤 Upload an Image", type=["jpg", "jpeg", "png"])
 
     if uploaded_file:
-        # Save the original file to /content
-        original_path = f"/content/{uploaded_file.name}"
+        # Save uploaded file to the local directory
+        original_path = uploaded_file.name
         with open(original_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
-        st.success(f"✅ File uploaded and saved to: `{original_path}`")
+        st.success(f"✅ File uploaded: `{original_path}`")
 
         # Set compression quality
-        quality = st.slider("🛠️ Compression Quality (lower = smaller file size)", 10, 95, 30)
+        quality = st.slider("🛠️ Compression Quality (lower = more compression)", 10, 95, 30)
 
-        # Output path for compressed image
+        # Define output path for compressed image
         filename = os.path.splitext(uploaded_file.name)[0]
-        output_path = f"/content/compressed_{filename}.jpg"
+        output_path = f"compressed_{filename}.jpg"
 
-        # Compress button
+        # Compress image when button is clicked
         if st.button("⚡ Compress Image"):
             result = compress_image(original_path, output_path, quality)
             if result:
-                st.success(f"✅ Image compressed and saved to: `{output_path}`")
+                st.success(f"✅ Image compressed and saved as `{output_path}`")
 
-                # Show download button
+                # Download button for the user
                 with open(output_path, "rb") as f:
                     st.download_button(
                         label="📥 Download Compressed Image",
@@ -48,4 +48,4 @@ if check_password():
                         mime="image/jpeg"
                     )
             else:
-                st.error("❌ Failed to compress image. Please try another image.")
+                st.error("❌ Compression failed. Try a different image.")
